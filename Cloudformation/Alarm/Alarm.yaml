@@ -1,0 +1,103 @@
+Resources:
+  MyDashboard:
+    Type: "AWS::CloudWatch::Dashboard"
+    Properties:
+      DashboardName: "AlarmMyDashboard"
+      DashboardBody: |
+        {
+          "widgets": [
+            {
+              "type": "alarm",
+              "width": 6,
+              "height": 6,
+              "properties": {
+                "title": "My Alarm Widget 1",
+                "alarms": [
+                  "arn:aws:cloudwatch:ap-south-1:817493965393:alarm:MyAlarm5"
+                ]
+              }
+            },
+            {
+              "type": "alarm",
+              "width": 6,
+              "height": 6,
+              "properties": {
+                "title": "My Alarm Widget 2",
+                "alarms": [
+                  "arn:aws:cloudwatch:ap-south-1:822223965393:alarm:MyAlarm6"
+                ]
+              }
+            },
+            {
+              "type": "alarm",
+              "width": 6,
+              "height": 6,
+              "properties": {
+                "title": "My Alarm Widget 3",
+                "alarms": [
+                  "arn:aws:cloudwatch:ap-south-1:822223965393:alarm:MyAlarm7"
+                ]
+              }
+            },
+            {
+              "type": "alarm",
+              "width": 6,
+              "height": 6,
+              "properties": {
+                "title": "My Alarm Widget 4",
+                "alarms": [
+                  "arn:aws:cloudwatch:ap-south-1:817493965393:alarm:MyAlarm8"
+                ]
+              }
+            }
+          ]
+        }
+  MyAlarm1:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmName: "MyAlarm5"
+      ComparisonOperator: "GreaterThanThreshold"
+      EvaluationPeriods: 1
+      MetricName: "CPUUtilization"
+      Namespace: "AWS/EC2"
+      Period: 60
+      Statistic: "Average"
+      Threshold: 80
+      ActionsEnabled: false
+  MyAlarm2:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmName: "MyAlarm6"
+      ComparisonOperator: "GreaterThanThreshold"
+      EvaluationPeriods: 1
+      MetricName: "NetworkIn"
+      Namespace: "AWS/EC2"
+      Period: 300
+      Statistic: "Sum"
+      Threshold: 100
+      ActionsEnabled: false
+  # add additional alarms here
+  MyAlarm3:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmName: "MyAlarm7"
+      ComparisonOperator: "GreaterThanThreshold"
+      EvaluationPeriods: 1
+      MetricName: "NetworkOut"
+      Namespace: "AWS/EC2"
+      Period: 300
+      Statistic: "Sum"
+      Threshold: 1
+      ActionsEnabled: false
+  MyAlarm4:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmName: "MyAlarm8"
+      ComparisonOperator: "GreaterThanThreshold"
+      EvaluationPeriods: 1
+      MetricName: "DiskReadBytes"
+      Namespace: "AWS/EBS"
+      Period: 300
+      Statistic: "Sum"
+      Threshold: 1000
+      ActionsEnabled: false

@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'AWS CloudFormation Template for the Ping Auth Session Api Gateway.'
+Parameters:
+  EnvironmentName:
+    Description: Environment name for the application - [dev/staging/production]
+    Type: String
+    AllowedValues:
+      - dev
+      - staging
+      - production
+  ApiGatewayName:
+    Type: String
+    Default: dx-internal-private-apigw
+Resources:
+  ApiGateway:
+    Type: "AWS::ApiGateway::RestApi"
+    Properties:
+      Name: !Sub ${EnvironmentName}-${ApiGatewayName}-rest
+  ApiGatewayResource:
+    Type: "AWS::ApiGateway::Resource"
+    Properties:
+      ParentId:
+        "Fn::GetAtt":
+          - "ApiGateway"
+          - "RootResourceId"
+      PathPart: "Resource"
+      RestApiId:
+        Ref: "ApiGateway"
+
+  ApiGatewayMethod:
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      RestApiId:
+        Ref: "ApiGateway"
+      ResourceId: 
+        Ref : "ApiGatewayResource"
+      HttpMethod: "GET"
+      AuthorizationType: "NONE"
+      Integration:
+        Type: "AWS_PROXY"
+        IntegrationHttpMethod: "POST"
+        Uri: !ImportValue 
+                'Fn::Sub': '${EnvironmentName}-LambdaUri'
+      MethodResponses:
+        - StatusCode: "200"
+          ResponseModels:
+            "application/json": "Empty"
+
+Outputs:
+  ApiGatewayId:
+    Description: 'Api Gateway ID'
+    Value:
+      Ref: "ApiGateway"
+    Export:
+      Name: !Sub '${AWS::StackName}-ApiGatewayId'
+  ApiGatewayResourceId:
+    Description: 'Api Gateway Recource ID'
+    Value:
+      Ref: "ApiGatewayResource"
+    Export:
+      Name: !Sub '${AWS::StackName}-RootResourceId'

@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'AWS CloudFormation Template for the Ping Auth Session Api Gateway.'
+Parameters:
+  EnvironmentName:
+    Description: Environment name for the application - [dev/staging/production]
+    Type: String
+    AllowedValues:
+      - dev
+      - staging
+      - production
+  ApiGatewayName:
+    Type: String
+    Default: dx-internal-private-apigw
+Resources:
+  ApiGateway:
+    Type: "AWS::ApiGateway::RestApi"
+    Properties:
+      Name: !Sub ${EnvironmentName}-${ApiGatewayName}-rest
+  ApiGatewayResource:
+    Type: "AWS::ApiGateway::Resource"
+    Properties:
+      ParentId:
+        "Fn::GetAtt":
+          - "ApiGateway"
+          - "RootResourceId"
+      PathPart: "Resource"
+      RestApiId:
+        Ref: "ApiGateway"
+
+Outputs:
+  ApiGatewayId:
+    Value:
+      Ref: "ApiGateway"
+    Export:
+      Name: "ApiGatewayId"
+  ApiGatewayResourceId:
+    Value:
+      Ref: "ApiGatewayResource"
+    Export:
+      Name: "ApiGatewayResourceId"
